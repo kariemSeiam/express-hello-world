@@ -1,61 +1,26 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
+const axios = require("axios");
 
 app.get("/", (req, res) => res.type('html').send(html));
 
-const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+// Endpoint for directions
+app.get("/directions", async (req, res) => {
+  try {
+    const googleMapsUrl = "https://www.google.com/maps/preview/directions?authuser=0&hl=ar&gl=eg&pb=!1m5!1s30.11369%2C+31.395909!3m2!3d30.11369!4d31.395909!6e2!1m1!1s30.03523%2C+31.337745!3m12!1m3!1d1!2d31.337745!3d30.03523!2m3!1f0!2f0!3f0!3m2!1i1122!2i956!4f13.1!6m33!1m1!18b1!2m3!5m1!6e2!20e3!6m13!4b1!49b1!74i150000!75b1!85b1!89b1!91b1!114b1!149b1!169b1!170i6!176f8!179f90!10b1!12b1!13b1!14b1!16b1!17m1!3e1!20m5!1e0!2e3!5e2!6b1!14b1!8m0!15m4!1s!4m1!2i10305!7e81!20m28!1m6!1m2!1i0!2i0!2m2!1i530!2i956!1m6!1m2!1i1072!2i0!2m2!1i1122!2i956!1m6!1m2!1i0!2i0!2m2!1i1122!2i20!1m6!1m2!1i0!2i936!2m2!1i1122!2i956!27b1!28m0!40i663!47m0";
+
+    const response = await axios.get(googleMapsUrl);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error fetching directions:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+const server = app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`);
+});
 
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;
-
-const html = `
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hello from Render!</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script>
-      setTimeout(() => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          disableForReducedMotion: true
-        });
-      }, 500);
-    </script>
-    <style>
-      @import url("https://p.typekit.net/p.css?s=1&k=vnd5zic&ht=tk&f=39475.39476.39477.39478.39479.39480.39481.39482&a=18673890&app=typekit&e=css");
-      @font-face {
-        font-family: "neo-sans";
-        src: url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff2"), url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff"), url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("opentype");
-        font-style: normal;
-        font-weight: 700;
-      }
-      html {
-        font-family: neo-sans;
-        font-weight: 700;
-        font-size: calc(62rem / 16);
-      }
-      body {
-        background: white;
-      }
-      section {
-        border-radius: 1em;
-        padding: 1em;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-right: -50%;
-        transform: translate(-50%, -50%);
-      }
-    </style>
-  </head>
-  <body>
-    <section>
-      Hello from Render!
-    </section>
-  </body>
-</html>
-`
